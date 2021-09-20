@@ -20,3 +20,5 @@
 .cxx
 local.properties
 /.idea/.name
+keystore
+app/prod

@@ -3,18 +3,12 @@
     android:opacity="opaque">
 
     <item android:drawable="?android:colorBackground" />
-    <item
-        android:width="100dp"
-        android:height="25dp"
-        android:drawable="@drawable/ic_bc_app_logo"
-        android:gravity="top|center"
-        android:top="64dp" />
 
     <item
+        android:width="500dp"
+        android:height="150dp"
         android:drawable="@drawable/ic_bc_app_logo_with_text"
         android:gravity="center" />
 
-    <item
-        android:drawable="@drawable/ic_bc_covid_19"
-        android:gravity="bottom" />
+
 </layer-list>

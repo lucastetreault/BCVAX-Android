@@ -21,7 +21,7 @@
 #-renamesourcefileattribute SourceFile
 
 #KEEP MODEL
--keep class ca.bc.gov.vaxcheck.model.** { *; }
+-keep class ca.trackthevaxxed.vaxcheck.model.** { *; }
 
 #JJWKT
 -keepattributes InnerClasses

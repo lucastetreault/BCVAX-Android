@@ -11,10 +11,10 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "ca.bc.gov.vaxcheck"
+        applicationId "ca.trackthevaxxed.vaxcheck"
         minSdk 27
         targetSdk 31
-        versionCode 10
+        versionCode 13
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -64,6 +64,8 @@ android {
 
 dependencies {
 
+    implementation "com.android.volley:volley:1.2.1"
+
     implementation "androidx.core:core-ktx:$versions.core_ktx"
 
     implementation "androidx.appcompat:appcompat:$versions.appcompat"
@@ -71,6 +73,8 @@ dependencies {
     implementation "com.google.android.material:material:$versions.material"
 
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
+
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$versions.swipe_refresh_layout"
 
     //Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$versions.navigation"
