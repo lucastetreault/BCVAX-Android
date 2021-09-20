@@ -1,4 +1,4 @@
-package ca.trackthevaxxed.vaxcheck.utils
+package ca.bc.gov.vaxcheck.utils
 
 import android.content.Context
 import android.net.ConnectivityManager

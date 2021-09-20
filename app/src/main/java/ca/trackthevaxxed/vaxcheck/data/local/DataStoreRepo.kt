@@ -26,7 +26,7 @@ class DataStoreRepo @Inject constructor(
     }
 
     val isOnBoardingShown: Flow<Boolean> = context.dataStore.data.map { preference ->
-        preference[ON_BOARDING_SHOWN] ?: false
+        preference[ON_BOARDING_SHOWN] ?: true
     }
 
     suspend fun setOnBoardingShown(shown: Boolean = true) = context.dataStore.edit { preference ->

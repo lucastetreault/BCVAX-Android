@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.util.Size
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
@@ -16,6 +17,7 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.core.TorchState
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -55,7 +57,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
 
     private lateinit var cameraExecutor: ExecutorService
 
-    private lateinit var requestPermission: ActivityResultLauncher<String>
+    private lateinit var requestPermission: ActivityResultLauncher<Array<String>>
 
     private lateinit var cameraProvider: ProcessCameraProvider
 
@@ -69,18 +71,15 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        requestPermission = registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
 
-            if (isGranted) {
+        requestPermission = registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            if (permissions.all { it.value }) {
                 setUpCamera()
-            } else {
-                showRationalDialog()
             }
         }
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -121,7 +120,8 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                 true -> {
                     cameraExecutor = Executors.newSingleThreadExecutor()
 
-                    checkPermissions()
+                    checkCameraPermissions()
+                    checkLocationPermissions()
 
                     binding.overlay.post {
                         binding.overlay.setViewFinder()
@@ -135,7 +135,8 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
                         .build()
                     findNavController().navigate(R.id.onBoardingFragment, null, navOptions)
                 }
-                else -> {}
+                else -> {
+                }
             }
         }
     }
@@ -172,24 +173,7 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
     /**
      * Check if permission for required feature is Granted or not.
      */
-    private fun checkPermissions() {
-        when {
-
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED -> {
-            }
-
-            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
-                showLocationRationalDialog()
-            }
-
-            else -> {
-                requestPermission.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-            }
-        }
-
+    private fun checkCameraPermissions() {
         when {
 
             ContextCompat.checkSelfPermission(
@@ -204,7 +188,40 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
             }
 
             else -> {
-                requestPermission.launch(Manifest.permission.CAMERA)
+                requestPermission.launch(
+                    arrayOf(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    )
+                )
+            }
+        }
+    }
+
+    /**
+     * Check if permission for required feature is Granted or not.
+     */
+    private fun checkLocationPermissions() {
+        when {
+
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED -> {
+                setUpCamera()
+            }
+
+            shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
+                showLocationRationalDialog()
+            }
+
+            else -> {
+                requestPermission.launch(
+                    arrayOf(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    )
+                )
             }
         }
     }
