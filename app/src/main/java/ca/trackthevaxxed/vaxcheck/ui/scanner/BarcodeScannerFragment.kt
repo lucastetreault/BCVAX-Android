@@ -27,6 +27,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import ca.trackthevaxxed.vaxcheck.BcVaxApp
 import ca.trackthevaxxed.vaxcheck.R
 import ca.trackthevaxxed.vaxcheck.barcodeanalyzer.BarcodeAnalyzer
 import ca.trackthevaxxed.vaxcheck.barcodeanalyzer.ScanningResultListener
@@ -38,6 +39,10 @@ import ca.trackthevaxxed.vaxcheck.utils.toast
 import ca.trackthevaxxed.vaxcheck.utils.viewBindings
 import ca.trackthevaxxed.vaxcheck.viewmodel.BarcodeScanResultViewModel
 import ca.trackthevaxxed.vaxcheck.viewmodel.SharedViewModel
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -344,13 +349,21 @@ class BarcodeScannerFragment : Fragment(R.layout.fragment_barcode_scanner), Scan
     }
 
     override fun onScanned(shcUri: String) {
-
         //Since camera is constantly analysing
         //Its good to clear analyzer to avoid duplicate dialogs
         //When barcode is not supported
         imageAnalysis.clearAnalyzer()
 
-        viewModel.processShcUri(shcUri, requireContext().readJsonFromAsset("jwks.json"))
+        val queue = Volley.newRequestQueue(BcVaxApp.getContext())
+        val url = "https://trackthevaxxed.ca/.well-known/jwks.json"
+
+        val stringRequest = StringRequest(
+            Request.Method.GET, url,
+            { response -> viewModel.processShcUri(shcUri, response) },
+            { })
+
+        queue.add(stringRequest)
+
 
     }
 

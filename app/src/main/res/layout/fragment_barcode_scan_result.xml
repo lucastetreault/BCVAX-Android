@@ -13,8 +13,7 @@
         android:layout_marginTop="@dimen/large"
         android:text="@string/b_c_s_vaccine_card_verifier"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_app_logo" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/txt_full_name"
